@@ -1,0 +1,33 @@
+const PERMISSIONS ={
+    admin:[
+        'manage_users',
+        'create_subject',
+        'view_subjects',
+        'update_subject',
+        'delete_subject',
+        'create_student',
+        'view_students',
+        'update_student',
+        'delete_student',
+        'create_faculty',
+        'view_facultys',
+        'update_faculty',
+        'delete_faculty',
+        'view-self'
+    ],
+    faculty:[
+        'view_subjects',
+        'view_students',
+        'update_subject',
+        'update_student',
+        'view-self'
+    ],
+    student:[
+        'view_subjects',
+        'assign_subject',
+        'view-self',
+        'update_subject'
+    ],
+}
+
+module.exports=PERMISSIONS;
