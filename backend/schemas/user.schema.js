@@ -25,7 +25,7 @@ const userSchema=new mongoose.Schema({
     accountType:{
         type:String,
         required: [true, 'Account type is required'],
-        enum:['student', 'faculty', 'admin'],
+        enum:['patient', 'doctor', 'admin'],
     },
     password:{
         type:String,

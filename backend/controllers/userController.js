@@ -1,7 +1,7 @@
 const bycrypt = require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const User=require('../models/userModel');
-const { JWT_SECRET } = require('../config/env.config');
+const { JWT_SECRECT } = require('../config/env.config');
 const registerUser=async(req, res)=>{
   try{
         if (!req.body) {
@@ -52,9 +52,9 @@ const loginUser=async(req, res)=>{
     if(!isMatch){
         return res.status(400).json({message: 'Invalid credentials'});
     }
-    const payload={user:{id:user.id}};
+    const payload={user:{id:user.id,accountType: user.accountType}};
     jwt.sign(
-      payload, JWT_SECRET,
+      payload, JWT_SECRECT,
       {expiresIn:'5h'},
       (err, token)=>{
         if(err) throw err;

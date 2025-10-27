@@ -1,5 +1,5 @@
 const jwt=require('jsonwebtoken');
-const { JWT_SECRET } = require('../config/env.config');
+const { JWT_SECRECT } = require('../config/env.config');
 
 
 const authUser=(req, res, next)=>{
@@ -9,7 +9,7 @@ const authUser=(req, res, next)=>{
     }
 
     try{    
-        const decoded=jwt.verify(token, JWT_SECRET);
+        const decoded=jwt.verify(token, JWT_SECRECT);
         req.user=decoded.user;
         next();
     }catch(error){

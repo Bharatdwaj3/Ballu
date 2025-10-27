@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 require('dotenv').config();
-const { MONGO_URI } = require('./config/env.config');
+const { MONGO_URI } = require('./env.config');
 
 const connectDB=()=>{
     mongoose

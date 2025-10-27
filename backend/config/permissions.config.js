@@ -1,32 +1,45 @@
 const PERMISSIONS ={
     admin:[
+        'update_patient',
         'manage_users',
         'create_subject',
         'view_subjects',
         'update_subject',
         'delete_subject',
-        'create_student',
-        'view_students',
-        'update_student',
-        'delete_student',
-        'create_faculty',
-        'view_facultys',
-        'update_faculty',
-        'delete_faculty',
-        'view-self'
+        'create_patient',
+        'view_patients',
+        'update_patient',
+        'delete_patient',
+        'create_doctor',
+        'view_doctors',
+        'update_doctor',
+        'delete_doctor',
+        'view-self',
+        'update-self'
     ],
-    faculty:[
+    doctor:[
         'view_subjects',
-        'view_students',
+        'view_patients',
         'update_subject',
-        'update_student',
-        'view-self'
+        'update_patient',
+        'view-self',
+        'update-self',
+        'view_doctors'
+        
     ],
-    student:[
+    patient:[
+        
         'view_subjects',
         'assign_subject',
         'view-self',
-        'update_subject'
+        'update_subject',
+        'view_patients',
+        'view_patient',
+        'update-self',
+
+        'create_subject',
+        'update_subject',
+        'delete_subject'
     ],
 }
 
