@@ -22,18 +22,34 @@ const userSchema=new mongoose.Schema({
         lowercase: true,
         match: [/\S+@\S+\.\S+/, 'Please fill a valid email address'],
     },
-    accountType:{
-        type:String,
-        required: [true, 'Account type is required'],
-        enum:['patient', 'doctor', 'admin'],
-    },
     password:{
         type:String,
         required:[true, 'User Password is required'],
         minLength:6,
     },
+    googleId: { type: String, sparse: true, select: false },
+    discordId: { type: String, sparse: true, select: false },
+    avatar: { type: String },
+    accountType: {
+    type: String,
+    required: [true, 'Account type required'],
+    enum: {
+            values: ['patient', 'doctor', 'admin'],
+            message: 'Invalid account type'
+        }
+    },
+    refreshToken:{type: String, default:null, select:false},
+    lastLogin:{type:Date, default:Date.now},
+    isEmailVerfied:{type:Boolean, default:false},
+    isActive:{type:Boolean, fdeafault: true},
+
+    isEmailVerfied: {type: Boolean, default:false},
+    emailVerificationToken: {type:String, select:false},
+    emailVerificationExpires: {type: Date, select: false}
 },{
-    timestamps:true
+    timestamps:true,
+    toJSON: { virtuals: true, transform: (doc, ret) => { delete ret.password; } },
+    toObject: { virtuals: true, transform: (doc, ret) => { delete ret.password; } }
 });
 
 module.exports=userSchema;

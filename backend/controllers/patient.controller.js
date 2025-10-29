@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const Patient = require("../models/patient.model");
-const User = require("../models/userModel");
+const User = require("../models/user.model");
 const cloudinary = require("../services/cloudinary.service"); 
 const getPatients = async (req, res) => {
   try {
