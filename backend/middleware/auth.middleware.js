@@ -5,15 +5,15 @@ const { JWT_ACC_SECRECT } = require("../config/env.config");
 const authUser = async (req, res, next) => {
   let payload = null;
   let authMethod = null;
-  const token = req.cookies.accessToekn;
+  const token = req.cookies.accessToken;
   if (token) {
     try {
       payload = jwt.verify(token, JWT_ACC_SECRECT);
       req.user = payload.user;
       authMethod = "jwt";
 
-      const user = await UserActivation.findById(req.user.id).select("isActive");
-      if (!user || !user.Active) {
+      const user = await User.findById(req.user.id).select("isActive");
+      if (!user || !user.isActive) {
         return res.status(401).json({ message: "User interaction or deleted" });
       }
       return next();
@@ -35,7 +35,7 @@ const authUser = async (req, res, next) => {
 
 return res.status(401).json({
   success: false,
-  message: "Access denied: no valied token or session",
+  message: "Access denied: no valid token or session",
   code: "Auth_required",
 });
 };

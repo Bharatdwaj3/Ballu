@@ -6,13 +6,13 @@ const cookieParser=require('cookie-parser');
 const passport = require('passport');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')
-const errorMiddleware =require('./middleware/db.middleware');
+const dbMiddleware =require('./middleware/db.middleware');
 
 
-const facultyRoutes=require('./routes/doctor.routes');
-const subjectRoutes=require('./routes/disease.routes');
+const doctorRoutes=require('./routes/doctor.routes');
+const diseaseRoutes=require('./routes/disease.routes');
 const userRoutes=require('./routes/user.routes');
-const studentRoutes=require('./routes/patient.routes');
+const patientRoutes=require('./routes/patient.routes');
 
 const { PORT, SESSION_SECRECT, MONGO_URI } = require('./config/env.config');
 const connectDB=require('./config/db.config');
@@ -38,18 +38,18 @@ app.use(session({
     store: new MongoStore({
         mongoUrl: MONGO_URI,
     }),
-    cookie: {maxAge :10*60*24}
+    cookie: {maxAge :10*24*60*60}
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/',(req,res)=>{ res.send('Server is ready'); });
-app.use('/api/student',studentRoutes);
-app.use('/api/subject',subjectRoutes);
-app.use('/api/faculty',facultyRoutes);
+app.use('/api/patient',patientRoutes);
+app.use('/api/disease',diseaseRoutes);
+app.use('/api/doctor',doctorRoutes);
 app.use('/api/user',userRoutes);
 
-app.use(errorMiddleware);
+app.use(dbMiddleware);
 
 app.listen(PORT, () => console.log('Server Started at port : ',PORT));

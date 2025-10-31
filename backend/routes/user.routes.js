@@ -14,10 +14,8 @@ const router=express.Router();
 
 router.post('/register', registerUser);
 router.post('/login',loginUser);
-router.post('/logout',logoutUser);
-
 router.get('/profile',authUser,profileUser);
-router.get('/logout',authUser,logoutUser);
+router.post('/logout',authUser,logoutUser);
 router.get('/refresh',refreshToken);
 
 

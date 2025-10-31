@@ -19,7 +19,11 @@ const registerUser=async(req, res)=>{
     }
     const existingUser = await User.findOne({ email });
       if(existingUser){
-        return res.status(400).json({message: 'User with this email already exists!'});
+        return res.status(400).json({
+          success:false,
+          message: 'User with this email already exists!',
+          code: 'EMAIL_EXISTS'
+        });
       }
 
     const user=new User({
@@ -36,7 +40,7 @@ const registerUser=async(req, res)=>{
     
     setAccessToken(res, user);
     await setRefreshToken(res, user);
-    await sendVerificationEmail(user);
+    sendVerificationEmail(user);
     return res.status(201).json({
       success: true,
       message: 'Registered Check email for verification code',
@@ -184,8 +188,8 @@ const logoutUser=async(req, res)=>{
 const profileUser=async(req, res)=>{
   try{
     const user=await User.findById(req.user.id)
-      .select('-password -refreshTokenn -googleId -discordId')
-      .password('accountType');
+      .select('-password -accounType -refreshTokenn -googleId -discordId')
+      
     if(!user){
       return res.status(404).json({
         success: false,
@@ -227,6 +231,44 @@ const verifyEmail = async (req, res) => {
   const result = await verifyOTP(userId, token);
   res.status(result.success ? 200 : 400).json(result);
 };
+
+const verifyOTP=async(userId, token)=>{
+  try{
+    const user = await User.findById(userId);
+    if(!user){
+      return {
+        success: false,
+        message: 'Invalid verification code',
+        code: 'OTP_EXPIRED'
+      };
+    }
+    if(new Date()>user.emailVerificationExpires){
+      return{
+        success: false,
+        message: 'Verification code expired',
+        code: 'OTP_EXPIRED'
+      };
+    }
+    user.isEmailVerified=true;
+    user.emailVerificationToken=null;
+    user.emailVerificationExpires=null;
+    await user.save();
+    return {
+      success: true,
+      message: 'Email verified success',
+      code: 'OTP_VERIFIED'
+    }
+  }catch(error){
+    console.error('OTP verification error: ',error);
+    return {
+      success: false,
+      message: 'Server error during verification',
+      code: 'SERVER_ERROR'
+    };
+  }
+};
+
+
 
 module.exports={
   registerUser,

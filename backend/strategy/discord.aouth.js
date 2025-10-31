@@ -46,7 +46,7 @@ passport.use(new DiscordStrategy({
         runValidators: true 
       }
     );
-        return done(null, profile);
+        return done(null, user);
          }catch(error){
             return done(error);
         }   
@@ -54,9 +54,14 @@ passport.use(new DiscordStrategy({
 ));
 
 passport.serializeUser(function(user, done){
-    done(null, user);
+    done(null, user._id);
 });
 
-passport.deserializeUser(function(user, done){
-    done(null, user);
+passport.deserializeUser(async(id, done)=>{
+    try{
+      const user=await User.findById(id);
+      done(null, user);
+    }catch(err){
+      done(err);
+    }
 });

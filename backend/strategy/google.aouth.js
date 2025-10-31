@@ -12,12 +12,11 @@ passport.use(new GoogleStrategy({
     },async (req, accessToken, refreshToken, profile, done)=>{
         try{
             const email = profile.emails?.[0]?.value;
-            const displayName = profile.displayName;
-
             if(!email){
                 return done(null, false, {message: 'Email scope not garanted'});
             }
-
+            const displayName = profile.displayName || 'User';
+            const avatar = profile.photos?.[0]?.value || null;
             const user = await User.findOneAndUpdate(
                 {googleId: profile.id},{
                     $set: {
@@ -25,13 +24,13 @@ passport.use(new GoogleStrategy({
                         fullName: displayName,
                         userName: displayName.split(' ')[0]?.toLowerCase() || "user",
                         accountType: 'patient',
-                        avaatar,
+                        avatar,
                         googleId: profile.id,
-                        isEmailVerfied: profile.emails?.[0]?.verified || false,
+                        isEmailVerified: profile.emails?.[0]?.verified || false,
                         lastLogin: new Date(),
                         isActive: true 
                     },
-                    $setonInsert: {
+                    $setOnInsert: {
                         createdAt: new Date()
                     }
                 },
@@ -41,18 +40,24 @@ passport.use(new GoogleStrategy({
                     runValidators: true,
                 }
             );
+            return done(null, user);
         }catch(error){
             console.error('Google OAuth error: ',error);
             return done(error);
         }
-        return done(null, profile);
     }
 ));
 
 passport.serializeUser(function(user, done){
-    done(null, user);
+    done(null, user._id);
 });
 
-passport.deserializeUser(function(user, done){
-    done(null, user);
+passport.deserializeUser(async (id, done)=>{
+    
+    try{
+        const user= await User.findById(id);
+        done(null, user);
+    }catch(err){
+        done(err);
+    }
 });

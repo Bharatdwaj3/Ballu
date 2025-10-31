@@ -40,10 +40,9 @@ const userSchema=new mongoose.Schema({
     },
     refreshToken:{type: String, default:null, select:false},
     lastLogin:{type:Date, default:Date.now},
-    isEmailVerfied:{type:Boolean, default:false},
-    isActive:{type:Boolean, fdeafault: true},
-
-    isEmailVerfied: {type: Boolean, default:false},
+    isEmailVerified:{type:Boolean, default:false},
+    isActive:{type:Boolean, default: true},
+ 
     emailVerificationToken: {type:String, select:false},
     emailVerificationExpires: {type: Date, select: false}
 },{

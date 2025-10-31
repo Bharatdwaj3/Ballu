@@ -19,7 +19,7 @@ const setAccessToken=(res, user)=>{
         }
     };
     const token = jwt.sign(payload, JWT_ACC_SECRECT, {expiresIn: JWT_ACC_EXPIRES_IN});
-    resizeBy.cookie('accessToken', token, cookieOpts(15*60));
+    res.cookie('accessToken', token, cookieOpts(15*60));
     return token;
 };
 
@@ -33,19 +33,23 @@ const setRefreshToken=async (res, user)=>{
     });
 
     const refreshExpiry=JWT_REF_EXPIRES_IN==='7d' ? 7*24*60*60: parseInt(JWT_REF_EXPIRES_IN);
-    res.cookie('refreshToken', token, cookieOpts(refreshExpiry, 'api/user/refresh'));
+    res.cookie('refreshToken', token, cookieOpts(refreshExpiry, '/'));
     return token;
 };
 
 const clearAuthCookies=(res)=>{
-    res.clearAuthCookies('accessToken', cookieOpts(0));
-    res.clearAuthCookies('refreshToken', cookieOpts(0, '/api/user/refresh'));
-    res.clearCookie('connect-sid');
+
+    const opts=cookieOpts(0);
+    const refreshOpts=cookieOpts(0, '/');
+
+    res.clearCookie('accessToken', {...opts, path: '/'});
+    res.clearCookie('refreshToken', {...refreshOpts, path: '/'});
+    res.clearCookie('connect.sid', {path: '/'});
 };
 
 const revokeRefreshToken=async(userID)=>{
-    if(!userId) return;
-    await User.findByIdAndUpdate(userId, {
+    if(!userID) return;
+    await User.findByIdAndUpdate(userID, {
         refreshToken: null, 
         lastLogin: new Date()
     });
@@ -85,7 +89,7 @@ const refreshTokenHandler=async(req, res)=>{
             expiresIn: JWT_ACC_EXPIRES_IN
         });
     }catch(error){
-        console.error('Refresh token error: ', err);
+        console.error('Refresh token error: ', error);
         res.status(401).json({
             success: false,
             message: 'Refresh token expired or invalid',
